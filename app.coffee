@@ -17,11 +17,6 @@ recognizer.onresult = (event) ->
 		car.animateStop()
 	if start
 		caranimation.start()
-	if result.isFinal
-		textBox.html = transcript
-	#interim:
-	else
-		textBox.html = transcript
 	return
 
 # Start listening...
@@ -31,13 +26,8 @@ record = new Layer
 	html: "record"
 
 record.onClick (event, layer) ->
+	recognizer.stop()
 	recognizer.start()
-
-textBox = new Layer
-	backgroundColor: "none"
-	color: "#000"
-	y: 50
-	html: "output"
 
 car = new Layer
 	backgroundColor: "none"
@@ -49,10 +39,14 @@ car = new Layer
 caranimation = new Animation car,
 	x: 0
 	options:
-		curve: "ease"
+		curve: "linear"
 		time: 10
 
 
 # On animation end restart the animation 
 caranimation.on Events.AnimationEnd, ->
 	#caranimation.restart()
+
+Events.wrap(window).addEventListener "keydown", (event) ->
+	recognizer.stop()
+	recognizer.start()
