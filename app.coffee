@@ -19,15 +19,18 @@ recognizer.onresult = (event) ->
 		caranimation.start()
 	return
 
-# Start listening...
-record = new Layer
-	backgroundColor: "none"
-	color: "#000"
-	html: "record"
+# Speech Synthesis
+synth = window.speechSynthesis
+utterThis = new SpeechSynthesisUtterance("Hallo Wie geht es dir?")
+window.speechSynthesis.onvoiceschanged = ->
+	voices = synth.getVoices()
+	utterThis.voice = voices[47]
+	return
+synth.lang = 'de-DE'
+
 
 record.onClick (event, layer) ->
-	recognizer.stop()
-	recognizer.start()
+	synth.speak(utterThis)
 
 car = new Layer
 	backgroundColor: "none"
@@ -50,3 +53,4 @@ caranimation.on Events.AnimationEnd, ->
 Events.wrap(window).addEventListener "keydown", (event) ->
 	recognizer.stop()
 	recognizer.start()
+	
