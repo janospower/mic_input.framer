@@ -15,22 +15,22 @@ recognizer.onresult = (event) ->
 	start = /\b(?:go|fahr|weiter|start|los|losfahren)\b/i.test(transcript)
 	if stop
 		car.animateStop()
+		synth.speak(utterStop)
 	if start
 		caranimation.start()
+		synth.speak(utterStart)
 	return
 
 # Speech Synthesis
 synth = window.speechSynthesis
-utterThis = new SpeechSynthesisUtterance("Hallo Wie geht es dir?")
+utterStart = new SpeechSynthesisUtterance("OK, es kann losgehen!")
+utterStop = new SpeechSynthesisUtterance("Wir haben angehalten!")
 window.speechSynthesis.onvoiceschanged = ->
 	voices = synth.getVoices()
-	utterThis.voice = voices[47]
+	utterStart.voice = voices[47]
+	utterStop.voice = voices[47]
 	return
 synth.lang = 'de-DE'
-
-
-record.onClick (event, layer) ->
-	synth.speak(utterThis)
 
 car = new Layer
 	backgroundColor: "none"
