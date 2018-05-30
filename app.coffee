@@ -7,6 +7,7 @@ recognizer.interimResults = true
 recognizer.lang = 'de-DE'
 #recognizer.lang = 'en-US'
 #recognizer.continuous = true
+recognizer.interimResults = false
 
 recognizer.onstart = (event) ->
 	synthActive.animate
@@ -23,12 +24,16 @@ recognizer.onend = (event) ->
 recognizer.onresult = (event) ->
 	result = event.results[event.resultIndex]
 	transcript = result[0].transcript
-	stop = /\b(?:stop|stopp|halt|bremsen|brems|bleib|anhalten)\b/i.test(transcript)
+	stop = /\b(?:stop|stopp|abbruch|halt|bremsen|brems|bleib|anhalten)\b/i.test(transcript)
 	start = /\b(?:go|fahr|weiter|start|los|losfahren)\b/i.test(transcript)
-	if stop
+	nach = /\b(?:nach|zum|zu|bis)\b/i.test(transcript)
+	if nach
+		nachResp = transcript.replace /nach/, "Wir kommen in 5 Minuten an bei "
+		sprich(nachResp)
+	else if stop
 		car.animateStop()
 		synth.speak(utterStop)
-	if start
+	else if start
 		caranimation.start()
 		synth.speak(utterStart)
 	return
@@ -36,7 +41,13 @@ recognizer.onresult = (event) ->
 # Speech Synthesis
 synth = window.speechSynthesis
 utterStart = new SpeechSynthesisUtterance("OK, es kann losgehen!")
-utterStop = new SpeechSynthesisUtterance("Wir haben angehalten!")
+utterStop = new SpeechSynthesisUtterance("Die Fahrt wurde abgebrochen!")
+sprich = (spruch) ->
+	utterThis = new SpeechSynthesisUtterance(spruch)
+	voices = synth.getVoices()
+	utterThis.voice = voices[47]
+	synth.lang = 'de-DE'
+	synth.speak(utterThis)
 window.speechSynthesis.onvoiceschanged = ->
 	voices = synth.getVoices()
 	utterStart.voice = voices[47]
