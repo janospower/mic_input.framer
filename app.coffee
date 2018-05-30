@@ -29,8 +29,10 @@ sprich = (spruch, listen) ->
 	voices = synth.getVoices()
 	utterThis.voice = voices[47]
 	synth.lang = 'de-DE'
+	console.log("utterance", utterThis)
 	synth.speak(utterThis)
 	utterThis.onend = (event) ->
+		print 'stopped'
 		if listen
 			recognizer.stop()
 			recognizer.start()
@@ -83,7 +85,7 @@ recognizer.onresult = (event) ->
 		when nachDest then sprich('Ok, es kann Losgehen!', false)
 		when nachInvalidDest then sprich(('Leider haben wir für' + checkIndex(toVocab,transcript) + 'keine Tour im Angebot. Bitte wählen Sie aus Kommunikationsdesign oder dem Peter Behrens Turm'), true)
 		#transcript.replace /nach/, "Wir kommen in 5 Minuten an bei "
-		when stop then sprich("Die Fahrt wurde abgebrochen!", false); car.animateStop()
+		when stop then sprich("Die Fahrt wurde abgebrochen!", true); car.animateStop()
 		when start then sprich("OK, es kann losgehen!", false); caranimation.start()
 		else sprich('das hab ich leider nicht verstanden', false)
 	return
