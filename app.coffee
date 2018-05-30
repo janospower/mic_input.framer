@@ -32,7 +32,7 @@ sprich = (spruch, listen) ->
 	console.log("utterance", utterThis)
 	synth.speak(utterThis)
 	utterThis.onend = (event) ->
-		print 'stopped'
+		#print 'stopped'
 		if listen
 			recognizer.stop()
 			recognizer.start()
@@ -61,7 +61,7 @@ checkIndex = (vocab, trans) ->
 
 rstop = /\b(?:stop|stopp|abbruch|halt|bremsen|brems|bleib|anhalten)\b/i
 rstart = /\b(?:phallus|go|fahr|weiter|start|los|losfahren)\b/i
-rnach = /\b(?:nach|zum|zu|bis)\b/i
+rnach = /\b(?:nach|zum|zu|bis|in)\b/i
 
 #Utils.delay 0.4, ->
 	
@@ -75,19 +75,21 @@ Events.wrap(window).addEventListener "keydown", (event) ->
 recognizer.onresult = (event) ->
 	result = event.results[event.resultIndex]
 	transcript = result[0].transcript
+	print transcript
 	start = rstart.test(transcript)
 	stop = rstop.test(transcript)
-	validDest = /\b(?:Kommunikationsdesign|Turm)\b/i.test(transcript)
+	validDestK = /\b(?:Kommunikationsdesign)\b/i.test(transcript)
+	validDestSE = /\b(?:sehen|ernten|Büro)\b/i.test(transcript)
 	nach = /\b(?:nach|zum|zu|bis|in)\b/i.test(transcript)
-	nachInvalidDest = nach && !validDest
-	nachDest = nach && validDest
+	nachInvalidDest = nach && !validDestK && !validDestSE
 	grade = switch
-		when nachDest then sprich('Ok, es kann Losgehen!', false)
-		when nachInvalidDest then sprich(('Leider haben wir für' + checkIndex(toVocab,transcript) + 'keine Tour im Angebot. Bitte wählen Sie aus Kommunikationsdesign oder dem Peter Behrens Turm'), true)
+		when validDestK then sprich('Ok, es kann Losgehen zum H.T.W. K.D. Gebäude!', false)
+		when validDestSE then sprich('Ok, es kann Losgehen zum sehen und Ernten Büro!', false)
+		when nachInvalidDest then sprich(('Leider haben wir für' + checkIndex(toVocab,transcript) + 'keine Tour im Angebot. Bitte wählen Sie aus Kommunikationsdesign oder dem sehen und ernten Büro'), true)
 		#transcript.replace /nach/, "Wir kommen in 5 Minuten an bei "
 		when stop then sprich("Die Fahrt wurde abgebrochen!", true); car.animateStop()
 		when start then sprich("OK, es kann losgehen!", false); caranimation.start()
-		else sprich('das hab ich leider nicht verstanden', false)
+		else sprich('das hab ich leider nicht verstanden', true)
 	return
 
 synthActive = new Layer
