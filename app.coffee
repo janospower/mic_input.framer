@@ -8,6 +8,14 @@ recognizer.lang = 'de-DE'
 #recognizer.lang = 'en-US'
 #recognizer.continuous = true
 
+recognizer.onstart = (event) ->
+	synthActive.animate
+		opacity: 1
+
+recognizer.onend = (event) ->
+	synthActive.animate
+		opacity: 0
+
 recognizer.onresult = (event) ->
 	result = event.results[event.resultIndex]
 	transcript = result[0].transcript
@@ -31,6 +39,15 @@ window.speechSynthesis.onvoiceschanged = ->
 	utterStop.voice = voices[47]
 	return
 synth.lang = 'de-DE'
+
+synthActive = new Layer
+	width: 20
+	height: 20
+	x: 0
+	y: 0
+	backgroundColor: "red"
+	borderRadius: 25
+	opacity: 0
 
 car = new Layer
 	backgroundColor: "none"
