@@ -83,7 +83,7 @@ recognizer.onresult = (event) ->
 	nach = /\b(?:nach|zum|zu|bis|in)\b/i.test(transcript)
 	nachInvalidDest = nach && !validDestK && !validDestSE
 	grade = switch
-		when validDestK then sprich('Ok, es kann Losgehen zum H.T.W. K.D. Gebäude!', false)
+		when validDestK then sprich('Ok, es kann Losgehen zum H.T.W. Kommunikationsdesign Gebäude!', false)
 		when validDestSE then sprich('Ok, es kann Losgehen zum sehen und Ernten Büro!', false)
 		when nachInvalidDest then sprich(('Leider haben wir für' + checkIndex(toVocab,transcript) + 'keine Tour im Angebot. Bitte wählen Sie aus Kommunikationsdesign oder dem sehen und ernten Büro'), true)
 		#transcript.replace /nach/, "Wir kommen in 5 Minuten an bei "
