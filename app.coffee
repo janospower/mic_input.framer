@@ -11,10 +11,14 @@ recognizer.lang = 'de-DE'
 recognizer.onstart = (event) ->
 	synthActive.animate
 		opacity: 1
+		options:
+			time: 0.2
 
 recognizer.onend = (event) ->
 	synthActive.animate
 		opacity: 0
+		options:
+			time: 0.2
 
 recognizer.onresult = (event) ->
 	result = event.results[event.resultIndex]
